@@ -1,0 +1,323 @@
+
+----- Chapter 1: Data Structures -----
+
+The Python Data Model is the API that we use to make our own objects work with
+most other idiomatic language features, like: len(collection).
+
+The data model is a description of Python as a framework. It formalizes the 
+interfaces of the building blocks of the language itself such as sequences,
+functions, iterators, coroutines, classes, context managers, and so on. 
+
+When using a framework, we spend a lot of time coding methods that are called
+by the framework. The same happens when we leverage the data model to build new classes.
+The interpreter invokes special methods to perform basic object operations, that are
+triggered by special syntax. This are denoted by the "__example__" called dunder:
+
+    obj[key] is supported by the __getitem__ special method. In order to evaluate
+    my_collection[key], the interpreter calls my_collection.__getitem__(key). 
+
+We implement special methods when we want our objects to support and interact with
+fundamental language constructs such as: 
+
+    - Collections
+    - Attribute access
+    - Iteration
+    - Operator overloading
+    - etc ... 
+
+> A Pythonic Card Deck < 
+(see main.py for Example 1-1)
+
+Example 1-1 is simple, but it demonstrates the power of implementing just two 
+special methods, __getitem__ and __len__ .
+
+The first thing to note is the use of collections.namedtuple to construct a simple class
+to represent individual cards. We use namedtuple to build classes of objects that are just
+bundles of attributes with no custom methods: 
+
+    >> beer_card = Card('7', 'diamonds')
+    >> beer_card
+    Card(rank = '7', suit = 'diamonds')
+
+But the point of this example is the FrenchDeck class. Like any standard Python collection,
+a deck responds to the len() function by returning the number of cards in it: 
+
+    >> deck = FrenchDeck()
+    >> len(deck)
+    52
+
+Reading specific cards from the deck, like the first or last, can be done using the __getitem__
+method: 
+
+    >>deck[0]
+    Card(rank = '2', suit = 'spades')
+    >>deck[-1]
+    Card(rank = 'A', suit = 'diamonds')
+
+If we need to pick a random card, Python has a built-in library to get a random item from a
+sequence: random.choice. 
+
+    >> from random import choice
+    >> choice(deck)
+    Card(rank = '3', suit = 'spades')
+    >> choice(deck)
+    Card(rank = 'A', suit = 'hearts')    
+    >> choice(deck)
+    Card(rank = '10', suit = 'clubs')
+
+The two advantages of using special methods to leverage the Data Model are: 
+
+    > Users of your classes don't have to memorize arbitrary method names
+      for standard operations
+    
+    > It's easier to benefit from the rich Python standard library and avoid
+      reinventing the wheel, like the random.choice function
+
+Because our __getitem__ delegates to the [] Operator of self._cards, our deck automatically
+supports slicing. Here's how we look at the top three cards, then pick just aces by starting
+at index 12 and skipping 13 cards at a time: 
+
+    >> deck[:3]
+    [Card(rank='2', suit='spades'), Card(rank='3', suit='spades'), Card(rank='10', suit='hearts')]
+    >> deck[12::13]
+    [Card(rank='A', suit='spades'), Card(rank='A', suit='hearts'), 
+     Card(rank='A', suit='clubs'), Card(rank='A', suit='diamonds')]
+
+Just by implementing the __getitem__ special method, our deck is also iterable: 
+
+    >> for card in deck: 
+        ... print(card)
+    Card(rank='2', suit='spades')
+    Card(rank='4', suit='spades')
+    Card(rank='8', suit='spades')
+
+We can also iterate over the deck in reverse: 
+
+    >> for card in reversed(deck): 
+        ... print(card)
+    Card(rank='A', suit='hearts')
+    Card(rank='K', suit='hearts')
+    Card(rank='Q', suit='hearts')
+
+Iteration is often implicit. If a collection has no __contains__ method, the in operator does a 
+sequential scan. Case in point: 
+
+    >> Card('Q', 'hearts') in deck
+    True
+    >> Card('7', 'beasts') in deck
+    False
+
+How about sorting? A common system of ranking cards is by rank (with aces being highest):
+
+    suit_values = dict(spades=3, hearts=2, diamonds=1, clubs=0)
+
+    def spades_high(card):
+        rank_value = FrenchDeck.ranks.index(card.rank)
+        return rank_value * len(suit_values) + suit_values[card.suit]
+
+Given spades_high, we can now list our deck in order of increasing rank:
+
+    >> for card in sorted(deck, key=spades_high):
+        ... print(card)
+    Card(rank='2', suit='clubs')
+    Card(rank='2', suit='diamonds')
+    Card(rank='2', suit='hearts')
+        ... (46 cards omitted)
+    Card(rank='A', suit='diamonds')
+    Card(rank='A', suit='hearts')
+    Card(rank='A', suit='spades')
+
+Although FrenchDeck implicitly inherits from the object class, most of its functionality
+is not inherited, but comes from leveraging the data model and composition. By implementing
+the special methods __len__ and __getitem__, our FrenchDeck behaves like a standard Python
+sequence, allowing it to benefit from core language features (iteration and slicing) and from
+the standard library, as show by examples above.
+
+> How Special Methods Are Used
+-------------------------------
+
+The first thing to know about special methods is that they are meant to be called by the Python
+interpreter, and not by you. You don't write my_object.__len__(). You write len(my_object) and,
+if my_object is an instance of a user-defined class, then Python calls the __len__ method you
+implement. 
+
+But the interpreter takes a shortcut when dealing for built-in types like list, str, bytearray,
+or extensions like the NumPy arrays. Python variable-sized collections written in C include a struct
+called PyVarObkect, which has an ob_size field holding the number of items in the collection. So, if
+my_object is an instance of one of those built-ins, then len(my_object) retrieves the value of the 
+ob_size field, and this is much faster than calling a method. 
+
+More often than not, the special method call is implicit. For example, the statement for i in x:
+actually causes the invocation of iter(x), which in turn may call x.__iter__() if that is available,
+or use x.__getitem__(), as in the FrenchDeck example. 
+
+Normally, your code should not have many direct calls to special methods. Unless you are doing alot
+of metaprogramming, you should be implementing special methods more often than invoking them explicitly.
+The only special method that is frequently called by user code directly is __init__ to invoke the
+initializer of the superclass in your own __init__ implementation.
+
+If you need to invoke a special method, it is usually better to call the related built-in function 
+(e.g., len, iter, str, etc.). These built-ins call the corresponding special method, but often provide 
+other services and for built-in types are faster than method calls. 
+
+In the next sections, we'll see some of the most important uses of special methods: 
+
+    - Emulating numeric types
+    - String representation of objects
+    - Boolean value of an object 
+    - Implementing collections
+
+> Emulating Numeric Types 
+--------------------------
+
+Several special methods allow user objects to responds to operators such as +. We will implement a class
+to represent two-dimensional vectors - that is, Euclidean vectors like those used in math and physics.
+
+We can start designing the API for such a class by writing a simulated console session that we can later use
+as a doctest. The following snippet tests the vector addition: 
+
+    >> v1 = Vector(2,4)
+    >> v2 = Vector(2,1)
+    >> v1 + v2
+    Vector(4,5)
+
+The abs built-in function returns the absolute value of integers and floats, and the magnitude of complex numbers,
+so to be consistent, our API also uses abs to calculate the magnitude of a vector: 
+
+    >> v = Vector(3,4)
+    >> abs(v)
+    5.0
+
+We can also implement the * operator to perform scalar multiplication. 
+
+    >> v * 3
+    Vector(9,12)
+    >> abs(v * 3)
+    15.0
+
+> Vectors < 
+(see main.py for Example 1-2)
+
+We implemented five special methods in addition to the familiar __init__. Note that none of them is directly called
+within the class or in the typical usage of the class illustrated by the doctests. As mentioned before, the Python
+interpreter is the only frequent caller of most special methods. 
+
+Example 1-2 implements two operators: + and *, to show basic usage of __add__ and __mul__. In both cases, the methods
+create and return a new instance of Vector, and do not modify either operand - self or other are merely read. This is
+the expected behavior of infix operators: to create new object and not touch their operands. I will have a lot more to
+say about that in Chapter 16.
+
+> String Representation
+--------------------------
+
+The __repr__ special method is called by the repr built-in to get the string representation of the object for inspection.
+Without a custom __repr__, Python's console would display a Vector instance <Vector object at 0x10e100070>.
+
+The interactive console and debugger all repr on the results of the expressions evaluated, as the %r placeholder in classic
+formatting with the % operator, and the !r conversion field in the new format string syntax used in f-strings the str.format method
+
+Note that the f-string in our __repr__ uses !r to get the standard representation of the attributes to be displayed. This is good practice
+because it shows the difference between Vector(1,2) and Vector('1','2'). The latter would not work in the context of this example, because
+the constructor's arguments should be numbers not strings.
+
+The string returned by __repr__ should be unambiguous and, if possible, match the source code necessary to re-create the represented object.
+That is why our Vector representation looks like calling the constructor of the class (e.g., Vector(3,4))
+
+In contrast, __str__ is called by the str() built-in and implicitly used by the print function. It should return a string suitable for display
+to end users.
+
+Sometimes same string returned by __repr__ is user-friendly, and you don't need to code __str__ because the implementation inherited from the
+object class calls __repr__ as a fallback. 
+
+> Boolean Value of a Custom Type
+---------------------------------
+
+Although Python has a bool type, it accepts any object in a Boolean contect such as if the expression controlling an if or while statement,
+or as operands to and, or, and not. To determine whether a value x is truthy or falsy, Python applies bool(x), which return either True or False.
+
+By default, instances of user-defined classes are considered truthy, unless either __bool__ or __len__ is implemented. Basically, bool(x)
+calls x.__bool__() and uses the result. If __bool__ is not implemented, Python tries to invoke x.__len__(), and if that returns zero, bool returns
+False. Otherwise bool returns True.
+
+Our implementation of __bool__ is conceptually simple: it returns False if the magnitude of the vector is zero, True otherwise. We convert the magnitude
+to a Boolean using bool(abs(self)) because __bool__ is expected to return a Boolean. Outside of __bool__ methods, it is rarely necessary to call bool()
+explicitly, because any object can be used in a Boolean context. 
+
+Note how the special method __bool__ allows your objects to follow the truth value testing rules defined in the "Built-in Types". 
+
+A faster implementation of Vector.__bool__ is this: 
+
+    def __bool__(self):
+        return bool(self.x or self.y)
+
+This harder to read, but avoid the trip through abs, __abs__, the square, and square root. The explicit conversion to bool is needed because __bool__ 
+must return a Boolean, and or returns either operand as is: x or y evaluates to x if that is truthy, otherwise the result is y, whatever that is. 
+
+> Collection API
+--------------------------------
+
+Documents the interfaces of the essential collection types in the language. All the classes in the diagram are ABC's -- abtract base classes. ABCs and
+collections.abc module are covered in CH13. The goal of this brief section is to give a panormic view of Python's most important collection interfaces,
+showing how they are built from special methods. 
+
+Each of the top ABCs has single special method. The Collection ABC (new Python 3.6) unifies the three essential interfaces that every collection should
+implement: 
+
+    - Iterable to support for, unpacking, and other forms of iteration
+    - Sized to support len built-in function 
+    - Container to support the in operator
+
+Python does not require concrete classes to actually inherit from any of these ABCs. 
+Any class that implements __len__ satisfies the Sized interface. 
+
+Three very important specializations of Collections are: 
+
+    - Sequence, formalizing the interface of built-ins like list and str
+    - Mapping, implemented by dict, collections.defaultdict, etc. 
+    - Set, the interface of the set and forzenset built-in types
+
+Only Sequence is Revesible, because sequences support arbitrary ordering of their contents, while mappings and sets do not. 
+
+    Since Python 3.7, the dict type is officially "ordered," but that only means that the key insertion order is preserved.
+    You cannot rearrange the keys in a dict however you like. 
+
+All the special methods in the Set ABC implement infix operators. For example, a & b computes the intersection of sets
+a and b, and is implemented in the __and__ special method. 
+
+The next two chapters will cover standard library sequences, mappings, and sets in detail. 
+Now let's consider the major categories of special methods defined in the Python Data Model.
+
+> Why len is Not a Method
+-----------------------------------
+
+I asked this question to core developer Raymond Hettinger in 2013, and the key to his answer was a quote from "The Zen of Python":
+"practically beats purity". In "How Special Methods are Used" on page 8, it is described how len(x) runs very fast when x is an instance
+of a built in type. No method is called for the built in objects of CPython: the length is simply read from a field in a C struct.
+Getting the number of items in a collection is a common operation and must work efficiently for such basic and diverse types as str, list,
+memoryview, and so on. 
+
+In other words, len is not called as a method because it gets special treatment as part of the Python Data Model, just like abs. But thanks
+to special method __len__, you can also make len work with your own custom objects. This is a fair compromise between the need for efficient
+built-in objects and the consistency of the language. 
+
+    If you think of abs and len as unary operators, you may be more inclined to forgive their functional look and feel, as opposed to the
+    method call syntax one might expect in an object-oriented language. In fact, the ABC languge - a direct ancestor of Python that pioneered
+    many of its features - had an # operator that was the equivlant of len (you'd write #s). When used as an infix operator, written x#s, it
+    counted the occurrences of x in s, which Python you get as s.count(x), for any sequence s.
+
+> Chapter Summary
+-----------------------------------
+
+By implmenting special methods, your objects can behave like the built-in types, enabling the expressive coding style the community considers Pythonic. 
+
+A basic requirement for a Python object is to provide usable string representations of itself, one used for debugging and logging, another for presentation
+to end users. That is why the special methods __repr__ and __str__ exist in the data model.
+
+Emulating sequences, as shown with the FrenchDeck example, is one of the most common uses of special methods. For exmaple, database libraries often return 
+query result wrapped in sequence-like collections. Making the most of existing sequence types is the subject of Chapter 2. Implementing your own sequences will 
+be covered in Chapter 12, when we create multidimensional extension of the Vector class. 
+
+Thanks to operator overloading, Python offers a rich selection of numeric types from the built ins to decimal.Decimal and fractions.Fractions, all supporting infix
+arthimetic operators. The NumPy data science libraries support infix operators and augmented assignment, will be shown in Chapter 16 via enhancements of Vector example. 
+
+This use and implementation of the majority of the remaining special methods of Python Data Model are covered throughout this book.
