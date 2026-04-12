@@ -61,3 +61,17 @@
 
     If you doubt my claim that these constructs are "more readable," read on. 
 
+    - For brevity, many Python programmers refer to list comprehensions as listcomps and generator expressions as genexps. 
+
+    A for loop may be used to do lots of different things: scanning a sequence to count or pick items, computing aggregates (sums, averages), or any number of other tasks. 
+    The code in Ex 2-1 is building up a list. In contrast, a listcomp is more explicit. Its goal is always to build a new list. Of course, it is possible to abuse listcomps
+    to write truly incomprehensible code. I've seen Python code with listcomps used just to repeat a block of code for its side effects. If you are not doing something with
+    the produced list, you should not use that syntax. Also, try to keep it short. If the list comprehension spans more than two lines, it is probably best to break it apart
+    or rewrite it as a plain for loop. Use your best judgement: for Python, as for English there are no strict rules for clear writing. 
+
+    - In Python code, line breaks are ignored inside pairs of [], {}, (). So you can build multiline lists, listcomps, tuples, dictionaries, etc., without using the \ line 
+      continuation escape, which doesn't work if you accidentally type a space after it. Also, when those delimiter pairs are used to define a literal with a comma-separated 
+      series of items, a trailing comma will be ignored. For example, when coding a multiline list literal, it is thoughtful to put a comma after the last item, making it a
+      little easier for the next coder to add one more item to that list, and reducing noise when reading diffs.
+
+    
