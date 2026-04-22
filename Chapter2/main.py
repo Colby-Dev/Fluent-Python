@@ -74,3 +74,27 @@ codes = [ord(x) for x in x]
 
 codes = [last := ord(c) for c in x]
 print(last)
+
+
+#Example 4
+
+a = (1, 2, [3, 4])
+b = (1, 2, [3, 4])
+# a == b is true here but since the 3rd item is a mutable one it can change making it false: 
+b[-1].append(100)
+
+# To find fixed values like tuples use the hash function to determine if they are truly immutable:
+
+def fixed(o):
+    try:
+        hash(o)
+    except TypeError:
+        return False
+    return True
+
+c = (1,2,(3,4))
+d = (1,2,[3,4])
+
+fixed(c) # --> Returns True
+fixed(d) # --> Returns False 
+
