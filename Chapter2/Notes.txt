@@ -149,4 +149,71 @@
 
 > Comparing Tuple and List Methods
 
+    When using a tuple as an immutable variation of list, it is good to know how similar their APIs are. As you can see (table 2-1), tuple supports all list methods that do not involve
+    adding or removing items, with one exception - tuple lacks the __reversed__ method. However, that is just for optimizations; reversed(my_tuple) works without it.
+
+> Unpacking Sequences and Iterables 
+
+    Unpacking is important because it avoids unnecessary and error-prone use of indexes to extract elements from sequences. Also, unpacking works with any iterable object as the data source
+    including iterators, which don't support index notation ([]). The only requirement is that the iterable yields exactly one item per variable in the recieveing end, unless you use a star
+    (*) to capture excess items, as explained later
+
+    (see example 5)
+
+> Unpacking with * in Function Calls and Sequence Literals
+
+    PEP 448 additional unpacking generalizations introduced more flexible syntax for iterable unpacking, best summarized in what's new in 3.5. PEP 448 also introduced a new syntax for **, 
+    which we'll see. later. Finally, a powerful feature of tuple unpacking is that it works with nested structures,
+    (see example 6)
+
+> Nested Unpacking
+
+    The target of an unpacking can use nesting e.g.(a, b, (c, d)). Python will do the right thing if the value has the same nesting sturture. 
+    (see example 2-8)
+
+    The output of this example is only Western hemisphere cities. The tarhet of an unpacking assignment can also be a list, but a good use cases are rare. The only one relevant would be if
+    you have a database query that returns a single record (e.g., the SQL code has a LIMIT 1 clause), then you can unpack and at the same time make sure there's only one result with this code: 
+
+        >>> [record] = query_returning_single_row()
+
+    If the record has only one field you can get it directly like: 
+
+        >>> [[field]] = query_returning_single_row_with_single_field()
+    
+    Both of these can be written as tuples, but don't forget that the syntax to write a single-item tuple must be written with a trailing comma. So the first target would be (record, ) and the second
+    would be ((field,),). In both cases you get a silent error if you do not use the trailing comma.
+
+> Pattern Mathcing with sequences
+
+    The most visible new feature in Python 3.10 is pattern matching with the match/case statement proposed in PEP634. 
+    Here is the first example of match/case handling sequences. Imagine you are designing a robot that accepts commands sent as sequences of words and numbers, you'd have a message like ['BEEPER', 440, 3].
+    You could use a method like this to handle such messages: 
+    (see example 2-9)
+
+    On the surface, match/case may look like the switch/case statement from the C language but that's only half the story. One key improvement of match over switch is destructuring a more advanced form of unpacking.
+    Destructing is a new word in the Python vocabulary, but it is commonly used in the documentation of languages that support pattern matching like Scala and Elixir. 
+
+    As a first example of destructuring, Example 2-10 shows part of Example 2-8 rewriting with match/case.
+
+    For example, the pattern [name, _, _, (lat, long)] in Example 2-10 matches a sequence with four items, and te last item must be a two-item sequence. Sequence patterns may be written as tuples or lists or any 
+    combination of nested tuples and lists, but it makes no difference which syntax you use: in a sequence pattern, square brackets and parentheses mean the same thing. I wrote the pattern as a list with a nested 
+    2-tuple just to avoid repeating brackets or parentheses in Example 2-10. 
+
+    A sequence pattern can match instances of most actual or virtual subclasses of collections.abc.Sequence, with the exception of str, bytes, and bytearray. These exceptions are treated as atomic values that way 
+    the case statement will be evaluated as a atomic variable regardless of the case definition. 
+
+    In the standard library, these types are compatible with sequence patterns: 
+    - list 
+    - memoryview
+    - array.array
+    - tuple
+    - range 
+    - collections.deque
+
+    Unlike unpacking, patterns don't destructure iterables that are not sequences (such as iterators) The _ symbol is special in patterns: it matches any single item in that position, but it is never bound to the 
+    value of the matched item. Also, the _ is the only variable that can appear more than once in a pattern. You can bind any part of a pattern with a variable using the as keyword:
+
+        case [name, _, _, (lat, long) as coord]:
+    
+    Given the subject ['Shanghai', 'CN', 24.9, (31.1, 121.3)], the preceding pattern will match, and set the following variable: 
     

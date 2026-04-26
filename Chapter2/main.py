@@ -67,8 +67,53 @@ break_line()
 for country, _ in traveler_ids:
     print(country)
 
+#Example 2-8
+print("\n---- EX 2-8 ----\n")
+metro_areas = [
+    ('Tokyo', 'JP', 36.933, (35.689722, 139.691667)),
+    ('Delhi NCR', 'IN', 21.935, (28.613889, 77.208889)),
+    ('Mexico City', 'MX', 20.142, (19.433333, -99.133333)),
+    ('New York-Newark', 'US', 20.104, (40.808611, -74.020386)),
+    ('São Paulo', 'BR', 19.649, (-23.547778, -46.635833))
+]
+
+print(f'{"":15} | {"Latitude":>9} | {"Longitude":>9}')
+for name, _, _, (lat, lon) in metro_areas:
+    if lon <= 0:
+        print(f'{name:15} | {lat:9.4f} | {lon:9.4f}')
+
+#Example 2-9
+print("\n---- EX 2-9 ----\n")
+def handle_command(self, message):
+    match message: 
+        case ['BEEPER', frequency, times]:
+            self.beep(times, frequency)
+        case ['NECK', angle]:
+            self.rotate_neck(angle)
+        case ['LED', ident, intensity]:
+            self.leds[ident].set_brightness(ident, intensity)
+        case _:
+            raise InvalidCommand(message)
+
+#Example 2-10
+print("\n---- EX 2-10 ----\n")
+metro_areas = [
+    ('Tokyo', 'JP', 36.933, (35.689722, 139.691667)),
+    ('Delhi NCR', 'IN', 21.935, (28.613889, 77.208889)),
+    ('Mexico City', 'MX', 20.142, (19.433333, -99.133333)),
+    ('New York-Newark', 'US', 20.104, (40.808611, -74.020386)),
+    ('São Paulo', 'BR', 19.649, (-23.547778, -46.635833))
+]
+
+print(f'{"":15} | {"Lat":>9} | {"Long":>9} |')
+for record in metro_areas:
+    match record:
+        case [name, _, _, (lat, long)] if long <=0:
+            print(f'{name:15} | {lat:9.4f} | {long:9.4f} |')
+
 #Example 3
 
+print("\n---- EX 3 ----\n")
 x = "ABC"
 codes = [ord(x) for x in x]
 
@@ -77,7 +122,7 @@ print(last)
 
 
 #Example 4
-
+print("\n---- EX 4 ----\n")
 a = (1, 2, [3, 4])
 b = (1, 2, [3, 4])
 # a == b is true here but since the 3rd item is a mutable one it can change making it false: 
@@ -97,4 +142,24 @@ d = (1,2,[3,4])
 
 fixed(c) # --> Returns True
 fixed(d) # --> Returns False 
+
+# Example 5
+print("\n---- EX 5 ----\n")
+lax_cords = (33.9425, -118.408056)
+latitude, longitude = lax_cords # unpacking
+
+# Another example of unpacking is swapping the values of variables with out using a temp var:
+# Using the * operand in front of the variable grabs the excess items from arguments
+a, b, *rest = range(5)
+print(a, b, rest)
+
+# It can be used in any order but must be used with only one variable in a declaration
+a, *body, b = range(3)
+print(a, body, b)
+
+# Example 6
+def fun(a, b, c, d, *test):
+    return a, b, c, d, *test
+
+fun(*[1,2], 3, *range(4,7))
 
