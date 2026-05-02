@@ -111,6 +111,32 @@ for record in metro_areas:
         case [name, _, _, (lat, long)] if long <=0:
             print(f'{name:15} | {lat:9.4f} | {long:9.4f} |')
 
+#Example 2-11, Matching patterns without match/case
+def evaluate(exp: Expression, env: Environment) -> Any:
+    "Evaluate an expression in an environment." 
+    if isinstance(exp, Symbol):
+        return env[exp]
+    # ... lines omitted
+elif exp[0] == 'quote':
+    (_, x) = exp
+    return x
+
+elif exp[0] =='if':
+    (_, test, consquence, alternative) = exp
+    if evaluate(test, env):
+        return evaluate(consquence, env)
+    else:
+        return evaluate(alternative, env)
+
+elif exp[0] == 'lambda':
+    (_, parms, *body) = exp
+    return Procedure(parms, body, env)
+
+elif exp[0] == 'define':
+    (_, name, value_exp) = exp
+    env[name] = evaluate(value_exp, env)
+    # ... more lines omitted
+
 #Example 3
 
 print("\n---- EX 3 ----\n")
@@ -161,5 +187,4 @@ print(a, body, b)
 def fun(a, b, c, d, *test):
     return a, b, c, d, *test
 
-fun(*[1,2], 3, *range(4,7))
-
+fun(*[1,2], 3, *range(4,7)
