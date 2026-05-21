@@ -263,4 +263,45 @@ Our focus here is destructing sequences, so I will not explain the evaluator act
 Example 2-11 shows Norvig's evaluator with minor changes, abbrviated to show only the seuqnce patterns. 
 (see Example 2-11) 
 
+Note how each elif clause checks the first item of the list, and then unpacks the list, ignoring the firstitem. The extensive use of unpacking suggests that Norvig is a fan of pattern matching, but he wrote that code originally for Python 2 (though now it works in Python 3).
 
+Using match/case in Python >= 3.10, we can refactor evaluate as shown in Example 2-12.
+(see Example 2-12)
+
+Without a catch-all, the whole match statement does nothing when a subject does not match any case, and this can be a silent failure. As any non matching case wouldn't produce any result. 
+
+Norvig deliberately avoided error checking in lis.py to keep the code easy to understand. With pattern matching, we can add more checks and still keep it readable. For example, in the 'define' pattern, the original code does not ensure that 'name' is an instance of 'Symbol', that would require an if block, an instance call, and more code. 
+
+> Alternative patterns for lambda
+
+This is the syntax of lambda in Scheme, using the syntatic convention that the suffix ... means the element may appear zero or more time: 
+
+	(lambda (parms...) body1 body2 ...) 
+
+A simple pattern for the lambda case 'lambda' would be this: 
+
+	case ['lambda', parms, *body] if body:
+
+However, that matches any value in the parms position, including the first 'x' in this invalid subject:
+
+	['lambda', 'x', ['*', 'x', 2]]
+
+The nested list after the lambda keyword in Scheme holds the names of the formal parameters for the function, and it must be a list even if it has only one element. It may also be an empty list, if the function takes no parameters like Python's random.random(). 
+
+In Example 2-12, I made the 'lambda' pattern safer using a nested sequence pattern: 
+
+	case['lambda', [*parms], *body] if body: 
+		return Procedure(parms, body, env)
+
+In a sequence pattern, * can appear only once per sequence. Here we have two sequences: the outer and the inner. 
+
+Adding the characters [*] around params made the pattern look more like the Scheme syntax it handles, and gaves us an additional structural check. 
+
+> Shortcut syntax for function definition
+
+Scheme has an alternative define syntax to create a named function without using a nested lambda. This is the syntax: 
+
+	(define (name parm...) body1 body2...)
+
+
+	
