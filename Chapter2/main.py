@@ -185,6 +185,25 @@ print(a, body, b)
 
 # Example 6
 def fun(a, b, c, d, *test):
+    print("\n---- EX6 ----\n")
     return a, b, c, d, *test
 
 fun(*[1,2], 3, *range(4,7))
+
+# Example 7
+def example7():
+     print("\n---- EX7 ---- \n")
+     l = [10,20,30,40,50,60]
+     print(l[:2]) #split at 2
+     print(l[2:]) #split after 2
+     print(l[:3]) #split at 3
+     print(l[3:]) #split after 3
+
+# Example 8
+def example8(): 
+
+    print("\n---- EX8 ---- \n")
+    s = 'bicycle'
+    print(s[::3]) # skips 3
+    print(s[::-1]) # reverse string
+    print(s[::-2]) # reverse by 2 chars

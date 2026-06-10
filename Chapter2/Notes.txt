@@ -242,7 +242,7 @@ The nested block with the print statement runs only if the pattern matches and t
 
 Exampled 2-10 is not an improvement over Example 2-8. It's just an example to contrast two ways of doing the same thing. The next example shows how pattern matching contributes to clear, concise, and effective code. 
 
-> Pattern Matching Sequences in an Interpreter
+> Pattern Matching Sequences in an Interpreter --------------------------------------------------
 
 
 Peter Norvig of Stanford Uni wrote lis.py an interpreter for a subset of the Scheme dialect of the Lisp programming lang in 132 lines of beautiful and readable Python code. I took Norvig's MIT licensed source and updated it to Python 3.10 to showcase pattern matching. In this section, we'll compare a ket part of Norvig's code which uses if/elif and unpacking with a rewrite using match/case. 
@@ -272,36 +272,83 @@ Without a catch-all, the whole match statement does nothing when a subject does 
 
 Norvig deliberately avoided error checking in lis.py to keep the code easy to understand. With pattern matching, we can add more checks and still keep it readable. For example, in the 'define' pattern, the original code does not ensure that 'name' is an instance of 'Symbol', that would require an if block, an instance call, and more code. 
 
-> Alternative patterns for lambda
+> Alternative patterns for lambda ---------------------------------------------------------------
 
 This is the syntax of lambda in Scheme, using the syntatic convention that the suffix ... means the element may appear zero or more time: 
 
 	(lambda (parms...) body1 body2 ...) 
 
-A simple pattern for the lambda case 'lambda' would be this: 
-
-	case ['lambda', parms, *body] if body:
-
-However, that matches any value in the parms position, including the first 'x' in this invalid subject:
+A simple pattern for the lambda case 'lambda' would be this:
 
 	['lambda', 'x', ['*', 'x', 2]]
 
 The nested list after the lambda keyword in Scheme holds the names of the formal parameters for the function, and it must be a list even if it has only one element. It may also be an empty list, if the function takes no parameters like Python's random.random(). 
 
-In Example 2-12, I made the 'lambda' pattern safer using a nested sequence pattern: 
+In Ex 2-12, I made the 'lambda' pattern safer using a nested sequence pattern: 
 
-	case['lambda', [*parms], *body] if body: 
-		return Procedure(parms, body, env)
+	case ['lambda', [*parms], *body] if body:
+		return Proceudure(parms, body, env)
 
 In a sequence pattern, * can appear only once per sequence. Here we have two sequences: the outer and the inner. 
 
-Adding the characters [*] around params made the pattern look more like the Scheme syntax it handles, and gaves us an additional structural check. 
+Adding the characters[*] around parms made the pattern look more like the Scheme syntax it handles, and gave us an additional structural check. 
 
-> Shortcut syntax for function definition
+> Shortcut syntax for function definition -------------------------------------------------------
 
-Scheme has an alternative define syntax to create a named function without using a nested lambda. This is the syntax: 
+Scheme has an alternative define syntax to create a named function without using a nested lambda. This is the syntax:
 
 	(define (name parm...) body1 body2...)
 
+The define keyword is followed by a list with the name of the new function and zero or more parameter names. After that list comes the function body with one or more expressions. 
 
-	
+Adding these two lines to the match takes care of the implementation: 
+
+	case ['define', [Symbol() as name, *parms], *body] if body:
+		env[name] = Procedure(parms, body, env)
+
+I'd place that case after the other define case in Example 2-12. The order between the define cases is irrelevant in this example because no subject can match both of these patterns: the second element must be a Symbol in the original define case, but it must be a sequence starting with Symbol in the define shortcut for function definition. 
+
+Now consider how much work we'd have adding support for this second define syntax without the help of pattern matching in Example 2-11. The match statement does alot more than the switch in C-like languages. 
+
+Pattern matching is an example of declarative programming: the code describes "what" you want to match instead of "how" to match it. The shape of the code follows the shape of the data as Table 2-2 illustrates. 
+
+This concludes our first tour of unpacking, destructing, and pattern matching with sequences. We'll cover other types of patterns in later chapters.
+
+Every Python programmer knows that sequences can be sliced using the s[a:b] syntax. We now turn to some less well-known facts about slicing. 
+
+
+	> Slicing
+	----------
+
+ A common feature of list, tuple, str, and all sequence types in Python in the support of slicing operations, which are more pwerful than most people realize. 
+
+ In this section, we describe the use of these advanced forms of slicing. Their implementation in a user-defined class will be covered in Chapter 12, in keeping with our philosophy of covering ready-to-use classes in this part of the book, and creating new classes in Part III. 
+
+> Why Slices and Ranges Exlcude the Last Item ---------------------------------------------------
+
+The pythonic convention of excluding the last item in slices and ranges works well with zero-based indexing used in Python, C, and many other languages. Some convenient features of the convention are: 
+
+	* It's easy to the length of a slice or range when only the stop position is given:
+		range(3) and my_list[:3] both produce three items. 
+
+	* It's easy to compute the length of a slice or range when start and stop are given:
+		just subtract stop - start
+
+	* It's easy to split a sequence in two parts at any index x, without overlapping:
+		simply get my_list[:x] and my_list[x:] For example: (see Example 7)
+
+The best arguments for this convention were written by the Dutch computer scientist Edsger W. Dijkstra. 
+
+Now let's take a close look at how Python interprets slice notation. 
+
+> Slice Objects ---------------------------------------------------------------------------------
+
+This is no secret, but worth repeating just in case: s[a:b:c] can be used to specify a stride or step c, causing the resulting slice to skip items. The stride can also be negative, returning items in reverse. Three examples make this clear: (see Example 8)
+
+Another example was shown in Chapter 1 when we used deck[12::13] to get all the aces in the unshuffled deck. 
+
+The notation a:b:c is only valid within [] when used as the indexing or subscript operator, and it produces a slice object: slice(a, b, c). As we will see in "How Slicing Works" on page 404, to evaluate the expression seq[start:stop:step], Python calls seq.__getitem__(slice(start, stop, step)). Even if you are not implementing your own sequence types, knowing about slice objects is useful because it lets you assign names to slices, just like spreadsheets allow naming of cell ranges. 
+
+Suppose you need to parse flat-file data like the invoice shown in Example 2-13. Instead of filing your code with hardcoded slices, you can name them. See how readable this makes the for loop at the end of the example. (see Example 2-13).
+
+
