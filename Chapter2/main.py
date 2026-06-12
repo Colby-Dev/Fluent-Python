@@ -112,7 +112,7 @@ for record in metro_areas:
             print(f'{name:15} | {lat:9.4f} | {long:9.4f} |')
 
 #Example 2-11, Matching patterns without match/case
-def evaluate(exp: Expression, env: Environment) -> Any:
+def evaluate(exp, env) -> any:
     "Evaluate an expression in an environment." 
     if isinstance(exp, Symbol):
         return env[exp]
@@ -136,6 +136,28 @@ def evaluate(exp: Expression, env: Environment) -> Any:
         (_, name, value_exp) = exp
         env[name] = evaluate(value_exp, env)
         # ... more lines omitted
+
+# Example 2-13 Line items from a flat file
+print('\n---- EX2 13 ----\n')
+def EX213():
+    invoice = """ 1909 Pimoroni PiBrella           $17.50     3     $52.50
+                  1489 6mm Tactile Switch x20      $4.95      2     $9.90 """
+    
+    UNIT_PRICE = slice(40, 52)
+    DESCRIPTION = slice(6, 40)
+    line_items = invoice.split('\n')[2:]
+    for item in line_items:
+        print(item[UNIT_PRICE], item[DESCRIPTION])
+
+EX213()
+
+print('\n---- EX2 14 ----\n')
+def EX214():
+    board = [['_'] * 3 for i in range(3)]
+    print(board)
+
+    board[1][2] = 'X'
+    print(board)
 
 #Example 3
 
@@ -207,3 +229,21 @@ def example8():
     print(s[::3]) # skips 3
     print(s[::-1]) # reverse string
     print(s[::-2]) # reverse by 2 chars
+
+# Example 9
+def example9(): 
+    print("\n---- EX9 ---- \n")
+    l = list(range(10))
+    print(l)
+    break_line()
+
+    l[2:5] = [20,30]
+    print(l)
+    break_line()
+
+    del l[5:7]
+    print(l)
+    break_line()
+
+example9()
+

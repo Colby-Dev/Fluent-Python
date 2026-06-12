@@ -351,4 +351,49 @@ The notation a:b:c is only valid within [] when used as the indexing or subscrip
 
 Suppose you need to parse flat-file data like the invoice shown in Example 2-13. Instead of filing your code with hardcoded slices, you can name them. See how readable this makes the for loop at the end of the example. (see Example 2-13).
 
+We'll come back to slice object when we discuss creating your own collections in "Vector Take #2: A Sliceable Sequence" on page 403. Meanwhile, from a user perspective, slicing includes additional features such as multidimensional slices and ellipsis (...) notation. 
+
+> Multidimensional Slicing and Ellipsis ---------------------------------------------------------
+
+The [] operator can also take multiple indexes or slices separated by commas. The __getitem__ and __setitem__ special methods that handle the [] operator simply receive the indices in a [i, j] as a tuple. In other words, to evaluate a[i,j], Python calls a.__getitem__((i,j)). 
+
+This us used, for instance, in the external NumPy package, where items of two dimensional numpy.ndarray can be fetched using the syntax a[i,j] and a two dimensional slice obtained with an expression like a[m:n, k:l]. Example 2-22 later in this chapter shows the use of this notation. 
+
+Except for memoryview, the built-in sequence types in Python are one-dimensional, so they support only one index or slice, and not a tuple of them. 
+
+The ellipsis written with three full tops (...) and not ... (Unicode U+ 2026) is recognized as a token by the Python parser. It is an alias to Ellipsis object, the single instance of the ellipsis class. As such, it can be passed as an argument to functions and as part of a slice specification, as in f(a, ..., z) or a[i:...]. NumPy uses ... as a shortcut when slicing arrays of many dimensions; for example, if x is a four-dimensional array, x[i,...] is a shortcut for x[i, :, :, :,] see NumPy quickstart to learn more about that. 
+
+At the time of this writing, I am unaware of uses of Ellipsis or multidimensional indexes and slices in the Python standard library. If you spot one, let me know. These syntactic features exist to support user-defined types and extensions such as NumPy.
+
+Slices are not just useful to extract information from sequences; they can also be used to change mutable sequences in place -- that is, without rebuilding them from scratch.
+
+> Assigning to Slices ---------------------------------------------------------------------------
+
+Mutable sequences can be grafted, excisedm and otherwise modified in place using slice notation on the lefthand side of an assignment statement or as the target of a del statement. The next example shows the power of this notation: 
+
+(see Example 9)
+
+Every coder knows that concatenation is a common operation with sequences. Introductory Python tutorials explain the use of + and * for that purpose, but there are some subtle details on how they work, which we cover next. 
+
+> Using + and * with Sequences ------------------------------------------------------------------
+
+Python programmers expect that sequences support + and *. Usually both operands of + must be the same sequence type, and neither of them is modified, but a new sequence of that same type is created as result of the concatenation. See below: 
+
+	>> l = [1,2,3]
+	>> l * 5
+	>> [1,2,3,1,2,3,1,2,3,1,2,3,1,2,3]
+
+	>> 5 * 'abcd'
+	>> 'abcabcabcabcabc' 
+
+Both + and * always create a new object, and never change their operands.
+
+> Building List of Lists ------------------------------------------------------------------------
+
+Sometimes we need to initialize a list with a certain number of nested lists for example, to distribute students in a list of teams or to represent squares in a game board. The best way of doing so is with a list comprehension shown in Example 2-14 (see Example 2-14)
+
+So far we have discussed the use of the plain + and * operators with sequences, but there are also the += and *= operators, which produce very different results, depending on the mutability of the target sequences. 
+
+
+
 
