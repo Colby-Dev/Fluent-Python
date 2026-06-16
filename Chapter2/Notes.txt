@@ -394,6 +394,38 @@ Sometimes we need to initialize a list with a certain number of nested lists for
 
 So far we have discussed the use of the plain + and * operators with sequences, but there are also the += and *= operators, which produce very different results, depending on the mutability of the target sequences. 
 
+> Augmented Assignment with Sequences -----------------------------------------------------------
 
+The augmented assignment operators += and *= behave quite differently, depending on the first operand. To simplyfy the discussion, we will focus on augmented addition first (+=), but the concepts also apply to *= and to other augmented assignment operators. 
+
+The special method that makes += work is __iadd__() or in place addition.
+
+However if __iadd__() is not implemented, Python will fall back and call __add__. 
+
+If a implements __iadd__, that will be called. In the case of mutable sequences (e.g., list, bytearray, array.array), a will be changed in place (i.e., the effect will be similar to a.extend(b)). However, when a does not implement __iadd__, the expression a += b has the same effect as a = a + b: the expression a + b is evaluated first, producing a new object, which is then bound to a.
+
+In other words the identity of the object bound to a may or may not change, depending on the availability of __iadd__. 
+
+In general, for mutable sequences, it is a good bet that __iadd__ is implemented and that += happens in place. For immutable sequences, clearly there is no way for that to happen. This also applies for *=, which is implemented via __imul__. The __iadd__ and __imul__ special methods are discussed later. 
+
+Repeated concattentation of immutable sequences is inefficient, because instead of just appending new items, the interpreter has to copy the whole target sequence to create a new one with new items concatenated. 
+
+> List.sort vs the sorted Built In --------------------------------------------------------------
+
+The list.sort method sorts a list in place, without making a copy like += or *=. It returns None to remind us that it changes the receiver and does not create a new list. This is an important Python API convention: function or methods that change an object in place sould return None to make it clear to the caller that the receiver was changed, and no new object was created. Similar behavior can be seen, for example, in the random.shuffle(s) function, which shuffles the mutable sequence s in place, and returns None. 
+
+In contrast, the built-in function sorted creates a new list and returns it. It accepts any iterable object as an argument, including immutable sequences and generators. 
+
+Both list.sort and sorted take two optional, keyword-only arguments: 
+
+	reverse: If True, the items are returned in descending order 
+		 (i.e., by reversing the comparison of the items). The default is False.
+
+	key: A one-argument function that will be applied to each item to produce its sorting key 	      For example, when sorting a list of strings, key=str.lower can be used to perform a
+	     case-insensitive sort, and key=len will sort the strings by length.
+
+Here are a few examples to clarify the use of these functions and keyword arguments. The examples also demonstrate that Python's sorting algorithm is stable (i.e., it preserves the relative ordering of items that compare equally): 
+
+(see Example 10)
 
 

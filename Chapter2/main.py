@@ -247,3 +247,16 @@ def example9():
 
 example9()
 
+
+# Example 10 
+def example10():
+    print("\n---- EX10 ----\n")
+    fruits = ['grapes','banana', 'apple']
+    x = sorted(fruits) 
+    reversed_x = sorted(fruits, reverse=True)
+    desc_order_reversed_x = sorted(fruits, reverse=True, key=len)
+    print(x)
+    print(reversed_x)
+    print(desc_order_reversed_x)
+
+example10()
