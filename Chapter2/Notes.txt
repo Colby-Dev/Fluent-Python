@@ -428,4 +428,79 @@ Here are a few examples to clarify the use of these functions and keyword argume
 
 (see Example 10)
 
+Once your sequences are sorted, they can be very efficiently searched. A binary search algorithm is already provided in the bisect module of the Python standard library. That module also includes the bisect.insort function, which can be used to make sure that your sorted sequences stay sorted. 
+
+Much of what we have seen so far in this chapter applied to sequences in general, not just lists or tuples. Python programmers sometimes overuse the list type because it is so handy. 
+
+> When a List Is Not the Answer -----------------------------------------------------------------
+
+The list type is flexible and easy to use, but depending on specific requirements, there are better options. For example, an array saves a lot of memory when you need to handle many values. On the other hand, if you are constantly adding and removing items from opposite ends of a list, it's good to know that a deque (double-ended queue) is a more efficient FIFO data structure. 
+
+If the program frequently checks for whether an item is present in a collection consider using a set. A set is more optimized for fast membership checking. They are also iterable, but they are not sequences because the ordering of set items is unspecified. 
+
+> Arrays ----------------------------------------------------------------------------------------
+
+If a list only contains numbers, an array.array is a more efficient replacement. Arrays support all mutable sequence operations (incuding .pop .insert, and .extend), as well as additional methods for fast loading and saving, such as .frombytes and .tofile. 
+
+A Python array is as lean as a C array. As shown in Figure 2-1, an array of float values does not hold full-fledged float float instances, but only the packed bytes representing their machine values similar to an array of double in the C language. 
+
+When creating an array, you provide a typecode, a letter to determine the underlying C type used to store each item in the array. For example, b is the typecode for what C calls a signed char, an integer ranging from -128 to 127. If you create an array('b'), then each item will be stored in a single byte and interpreted as an integer. For large sequences of numbers, this saves alot of memory. And Python will not let you put any number that does not match the type for the array. 
+
+(see Example 2-19)
+
+As you can see array.tofile and array.fromfile are extremely quick. Both are able to load 10 million double-preceision floats from the bin file create with array.tofile. That is nearly 60x faster than a text file. 
+
+> Memory Views ----------------------------------------------------------------------------------
+
+The built-in memoryview class is shared-memory sequence type that lets you handle slices of arrays without copying bytes. Using the notation memoryview.cast we can change the way multiple bytes are read or written without moving bits around. memoryview.cast returns another memoryview object, always sharing th same memory.
+
+Example 2-20 shows how to create alternate views on the same array of 6 bytes, to operate on it as a 2x3 matrix or a 3x2 matrix. 
+
+(see Example 2-20)
+
+The awesome power of memoryview can also be used to corrupt. Example 2-21 shows how to change a single byte of an item in an array of 16 bit ints. 
+
+(see Example 2-21)
+
+> NumPy -----------------------------------------------------------------------------------------
+
+Throughout this book, I make a point of highlighting what is already in the Python standard. NumPy is not in this standard but is so good it needs to be reviewed. 
+
+For advanced array and matrix operations, NumPy is the reason why Python became mainstream in scientific computing problems. NumPy implements multidimensional, homogeneous arrays and matrix types that hold not only numbers but also user-defined records, and provides efficient element-wise operations.
+
+SciPy is a library built on top of NumPy. It offers many scientific computing algorithms such as linear algebra, calculus, statistics. SciPy is fast and reliable because it leverages the widely used C and Fortran codebase from the Netlib Repository. In other words, SciPy gives scientists the best of both worlds. 
+
+(see Example 2-22)
+
+NumPy and SciPy are powerful libraries, and are foundations of other tools such as Pandas, which implments array types that can hold non numeric values. Most NumPy and SciPy functions are implemented in C++ and can leverage the GIL to use all CPU cores.
+
+> Deques and Other Queues -----------------------------------------------------------------------
+
+The .append and .pop methods make a list usable as a stack or a queue (if you use .append and .pop(0), you get FIFO behavior). But inserting and removing from the head of a list (the 0-index end) is costly because the entire list must be shifted in memory. 
+
+The class collections.deque is a thread safe double ended queue designed for fast inserting and removing from both ends. It is also the way to go if you need to keep a list of "last seen items" or something of that nature, because a deque can be created with a fixed max length. If a bounded deque is full, when you add a new item, it discards an item from the opposite end. 
+
+(see Example 2-23)
+
+Besides deque, other Pyton standard library packages implements queues: 
+
+	queue - Provides the synch'd classes SimpleQueue, Queue, LifoQueue, and PriorityQueue. 
+		These can be used for safe communication between threads. All except SimpleQueue
+		can be bounded by providing a max size argument grater than 0 to the constructor.
+
+	multiprocessing - Implements its own unbounded SimpleQueue and bounded Queue, very 
+			  similar to those in the queue package, but designed for interprocess
+			  communication. A specialized multiprocessing.JoinableQueue is provided
+			  for task management. 
+
+	asyncio - Provides Queue, LifoQueue, PriorityQueue, and JoinableQueue with APIs inspired
+		  by the classes in the queue and multiprocessing modules, but adapted for
+		  managing task in asynchronous programming. 
+
+	heapq - In contrast to the previous three modules, heapq does not implement a queue 
+		class, but provides functions like heappush and heappop that let you use a 
+		mutable sequence as a heap queue or priority queue. 
+
+This ends the overview of alternatives to the list type, and also our exploration of sequence types in general.
+
 

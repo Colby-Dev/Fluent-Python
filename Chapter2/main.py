@@ -159,6 +159,81 @@ def EX214():
     board[1][2] = 'X'
     print(board)
 
+print("\n---- EX2 19 ----\n")
+from array import array
+from random import random
+def EX219(): 
+    floats = array('d', (random() for i in range(10**7)))
+    fp = open('floats.bin', 'wb')
+    floats.tofile(fp)
+    fp.close()
+
+    floats2 = array('d')
+    fp = open('floats.bin', 'rb')
+    floats2.fromfile(fp, 10**7)
+    fp.close()
+    if floats == floats2:
+                   return print(True)
+
+EX219()
+
+# Example 2-20
+print("\n---- EX 2 20 ----\n")
+def EX220():
+    octets = array('B', range(6))
+    m1 = memoryview(octets)
+    m1.tolist()
+
+    m2 = m1.cast('B', [2,3])
+    m2.tolist()
+
+    m3 = m1.cast('B', [3,2])
+    m3.tolist()
+    print(octets)
+
+EX220()
+
+#Example 2-21
+print("\n---- EX 2 21 ----\n")
+def EX221():
+    numbers = array('h', [-2, -1, 0, 1, 2])
+    memv = memoryview(numbers)
+    memv_oct = memv.cast('B')
+    memv_oct.tolist()
+    memv_oct[5] = 4
+
+EX221()
+
+#Example 2-22
+import numpy as np
+print("\n---- EX2 22 ----\n")
+def EX222():
+    a = np.arange(12)
+    a.shape = 3,4
+    print(a[2])
+    print(a[2,1])
+    a.transpose()
+
+EX222()
+
+#Example 2-23
+from collections import deque
+print("\n---- EX2 23 -----\n")
+def EX223():
+    dq = deque(range(10), maxlen=10)
+    print(dq)
+    dq.rotate(3)
+    print(dq)
+    dq.rotate(-4)
+    print(dq)
+    dq.appendleft(-1)
+    print(dq)
+    dq.extend([11, 22, 33])
+    print(dq)
+
+EX223()
+
+
 #Example 3
 
 print("\n---- EX 3 ----\n")
