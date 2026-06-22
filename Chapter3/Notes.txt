@@ -1,0 +1,49 @@
+----- //// Chapter 3 //// -----
+---- Dictionaries and Sets ----
+
+Python dictionaries (dict) are used often in Python, either directly with dict {} or indirectly with Class and instance attributes with __builtins__.__dict__. Dictionaries are optimized, as they are hash tables in the code behind Python. 
+
+Other built-in types based on has tables are set and frozenset. Sets are highly optimized by using operations like union, intersection, subset test, etc. These allow us to use algorithms to avoid nesting numerous loops. 
+
+--> Modern Dict Syntax
+-------------------------------
+
+> dict Comprehensions
+
+	A dict comprehension (dict comp), builds a dict instance by taking key:value pairs from any iterable. Example 3-1 shows the use of dict comprehensions to build two dictionaries from the same list of tuples. 
+
+	(see Example 3-1)
+
+> Unpacking Mappings
+
+	PEP 448 introduced support for mapping unpackings in two ways. First applying ** to more than one argument call in a function. Second is using ** inside a dict literal, multiple times regardless of data type or structure. 
+
+	def dump(**kwargs):
+		return kwargs
+
+	dump(**{'x': 1}, 'y':2, **{'x':4})
+	>>> {'x': 4, 'y':2}
+
+> Merging Mappings with | 
+
+	Python 3.9 supports | and |= to merge mappings. These are also set union operators:
+
+		>> d1 = {'a':1, 'b':4}
+		>> d2 = {'a':3, 'b':7, 'c':100}
+
+		>> d1 | d2
+		>> print(d1)
+
+		   {a: 3, b: 7, c:100}
+
+	The new mapping of d1 shows the left join of d2 overwriting the original dict and adding any additional elements. The inplace function is the same syntax and can be done in a cleaner way: 
+
+		>> d1
+		{'a':1, 'b':3}
+		>> d1 |= d2
+		>> d1
+		{'a':2, 'b':4, 'c':6}
+
+> Pattern Matching with Mappings
+
+		
