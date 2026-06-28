@@ -46,4 +46,102 @@ Other built-in types based on has tables are set and frozenset. Sets are highly 
 
 > Pattern Matching with Mappings
 
-		
+	Match / case statements support subjects mapping objects. Patterns for mappings can match for any subclasses of the collections library, such as dicts, list, etc. Using match / case we can deconstruct nested mappings that are used from noSQL DBs like MongoDB or Postgres. 
+	
+	(see Example 3-2)
+
+	Using the * will allow for a match to find a key then use any of the values in that key whether it is a list or just a string split on .split(). Using **for the kwargs is possible by any key value pair to also be matched outside of what the case looks for. This is tricky to implement as it will grab all key value pairs even if they are unnecessary. 
+
+> Standard API of Mapping Types
+
+	The collections.abc module provides the Mapping and MutableMapping ABCs describing the interfaces of dict and similar types. They do however require that keys are hashable, since they use the basic dict type in their implementation. 
+
+> What Is Hashable? 
+
+	A hash is a series of numbers that are immutable as they do not change from existing objects. Only immutable objects like tuples are hashables since any mutable data structures can change. 
+
+> Inserting or Updating Mutable Values
+
+	When trying to access a key value d[k] when k isnt an existing value will throw an error. You can use d.get(k, default) to handle the error as it will return nothing. The better way of doing this though is by using a .setdefault method like in Example 3-5.
+
+	(see Example 3-5)
+
+	By using the following: 
+
+		my_dict.setdefault(key, []).append(new_value)
+
+	This is the same as: 
+
+		if key not in my_dict: 
+			my_dict[key] = []
+		my_dict[key].append(new_value)
+
+	The key difference between these two parts of code from EX3-5 is the first looks for the key value and replaces the value. The latter part is much slowing as it compares all keys and then needs to find and update the value again. 
+
+> Automatic Handling of Missing Keys
+
+	Somtimes it is convenient to have mappings that return imaginary values when a missing key is searched for. The two ways of doing this would be to use defualtdict and a dict subclass and add the __missing__ method. 
+
+	--> Defaultdict: Another Take on Missing Keys
+
+		Using defaultdict, default values can be created on demand when a 
+		missing key is searched. Inizialiing default dict, it will take a 
+		mutable data structure such as a list. If a missing key is searched, 
+		a new key is created and a reference to that list. 
+
+		Using defaultdict works by calling the special method __missing__ 
+
+	--> The __missing__ Method
+
+		The underlying way mappings deal with missing keys is the __missing__ 		     method. The dict class will call dict.__getitem__ which will 
+		implicitly trigger the __missing__ method, whenever a key is not 
+		found instead of raising a KeyError. 
+
+		(see Example 3-8)
+
+> Inconsistent Usage of __missing__ in the Standard Library
+
+	dict subclass, 
+	-------------
+		A subclass of dict implmenting only __missing__ and no other method.
+
+	collections.UserDict subclass,
+	------------------------------
+		A subclass of UserDict implementing only __missing__ and no other 
+		method. The get method inherited from UserDict calls __getitem__. 
+		This means __missing__ may be called to handle lookups.
+
+	abc.Mapping subclass with the possible __getitem__,
+	---------------------------------------------------
+		A minimal subclass of abc.Mapping implementing __missing__ and the
+		required abstract methods. This includes an implementation of 
+		__getitem__ taht does not call __missing__. 
+
+	abc.Mapping subclass with __getiem__ calling __missing__,
+	---------------------------------------------------------
+		A minimal subclass of abc.Mapping implementing __missing__ and the 
+		required abtract methods, including __getitem__ that calls 
+		__missing__.
+
+	With the four implementations mentioned, if they implement __getitem__, get, 
+	and __contains__, then you can make these methods use __missing__. The 
+	Standard library has many ways of using __missing__ which all may have edge 
+	case behavior.
+
+> Variations of dict
+
+	collections.OrderedDict,
+	-----------------------
+
+		In Python 3.6, the built-in dict will order keys by default. The 
+		most common reason then to use OrderedDict is writing code taht is 
+		backward compatible with earlier versions.
+
+	collections.ChainMap,
+	--------------------
+
+		The chainmap instance holds a list of mappings that can be searched 
+		individually. This instance orders the keys, then ends once it finds
+		the key, which is very efficient. 
+
+	
