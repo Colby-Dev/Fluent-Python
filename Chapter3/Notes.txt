@@ -221,6 +221,52 @@ dict_values, and dict_items are internal and are not available via built-ins or 
 
 > Set Theory
 
-	Sets in python are a type that is immutable and are apart of the standard library, and are now built-ins. They are a collection of unique objects and are used to remove duplication. 
+	Set objects in python are a type that is immutable and are apart of the standard library, and are now built-ins. They are a collection of unique objects and are used to remove duplication. 
 
-	Set elements must be hashable. The set type is not hashable, so you can't build a set with a nested set. 
+	Set elements must be hashable and therefore mutable. The set type is not hashable, so you can't build a set with a nested set. Set operations are fairly striaght forward, but are powerful as they allow infix operations shortening code and makeing programs more efficient. Given set a and b, a being addresses and b being a subset of names that are locate at said addresses, it can be written as a set such as: 
+
+		found = len(a & b) // shows the intersection between both sets. 
+
+> Set Literals
+
+	The syntax of sets are similar to dicts but with just a curly brace and single separated values. You can also pass the set() constructor function on the desired set. Instantiating the set with just the curly brace is the most efficient as the constructor has to evaluate it. 
+
+	Frozensets are just called using the frozenset() constructor. This type of set's elements are immutable whereas sets elements are mutable. 
+
+> Set Comprehensions
+
+	Set comprehensions (setcomps) were added with dictcomps. They allow for inline set creation just like dictcomps and listcomps: 
+
+		from unicodedata import name
+		{chr() for i in range (32, 256) if 'SIGN' in name(chr(i), '')
+		## Returns the symbols in a set
+
+> Practical Consequences of How Sets Work
+
+	The set and frozenset are both implemented with a hash table. This has these effects: 
+
+		* elements of sets must be hashable, and thus must implement __hash__ and
+		  __eq__. 
+
+		* Finding elements through hashes is extremely efficient. 
+
+		* Sets have significant memory overhead, compared to low level array 
+		  pointers
+
+		* Element order depends on the inerstion into the set
+
+		* With large amounts in a set python may reorder the set. 
+
+> Set Operations
+
+	Set methods overload operators, such as & and >=. Many operations and methods are usable for sets. 
+
+> Chapter Summary
+
+	Dictionaries are powerful tools that support unpacking with **, pattern matching, and dict comprehensions. The python standard provides the dict object but special dict objects can be imported. 
+
+	setdefault and update methods are powerful in mapping. Setdefault can bulk insert or bulk write very efficiently. |= is used to update a mapping. Using __missing__ method can allow us to customize and handle errors with custom behavior. 
+
+
+
+
