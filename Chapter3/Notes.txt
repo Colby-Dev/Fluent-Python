@@ -144,4 +144,83 @@ Other built-in types based on has tables are set and frozenset. Sets are highly 
 		individually. This instance orders the keys, then ends once it finds
 		the key, which is very efficient. 
 
-	
+	collections.Counter,
+	-------------------
+
+		A mapping that holds an integer count for each key. Using the 
+		.update method adds to the value per the key. The counter mapping 
+		takes a string then creates a dict from the string, where the key 
+		is the strings and the value is the amount of occurances.
+
+	shelve.Shelf,
+	-------------
+		
+		The shelve module is a persistent storage for a mapping of string 
+		keys to Python objects that are pickle binary format. The keys in 
+		this module must be string. This module is basically a database 
+		that stores mappings as a key in the DB and value as serialized 
+		pickle binaries. 
+
+> Subclassing UserDict Instead of Dict
+
+	It is better to create a new mapping type by extending collections.UserDict rather than dict. This is because dict has built-in implementation shortcuts that force us to override methods. 
+
+	UserDict does not inherit from dict, instead it uses an internal instance of it called data. This allows us to sidestep undesired recursion in the normal dict type, such as methods like __setitem__ since we can just use __contains__. 
+
+	In Example 3-9, the implementation is better because it allows us to force all keys to be strings avoiding other types. UserDict extends abc.MutableMapping, the remaining methods that make StrKeyDict a mapping are inherited from UserDict are MutableMapping or Mapping. 
+
+	MutableMapping.update
+	---------------------
+
+		This powerful method can be called directly and by the __init__ 
+		method to load the instance from other mappings, iterables, etc. 
+		It does use __setitem__ special method since it adds items using 
+		self[key] = value. 
+
+	Mapping.get
+	-----------
+
+		In EX3-8, we created our own get method to return the same results 
+		as __getitems__, but in EX3-9 we inherited Mapping.get which is 
+		exactly like the StrKeyDict0.get	
+
+> Immutable Mappings
+
+	The mapping types from the standard library are al mutable. In order to 
+	create an immutable type of a mapping we can use a class called 
+	MappingProxyType, which give a mapping returns a mapping proxy that is 
+	read-only. This class is from the types module. 
+
+	(see Example 3-10)
+
+> Dictionary Views
+
+	The dict instance methods .keys(), .values(), and .items() return instances of classes called dict_keys, dict_values, and dict_items. These methods are read only methods of the dict type. These are all very efficient as no copying is happening. These read only methods are called views. 
+
+	A view object is a dynamic proxy and is immutable. The classes dict_keys, 
+dict_values, and dict_items are internal and are not available via built-ins or any standard library module.
+
+	The dict_values class is the simplest dictionary view it implements only the __len__, __iter__, and __reversed__ special methods. The other two classes, dict_keys, and dict_items also implement their own special methods. 
+
+> Practical Consequences of How Dict Works
+
+	The hash table implementation of dict is very efficient but does have some 
+	important information:
+
+	* Keys must be hashable and implement proper __has__ and __eq__ methods. 
+
+	* Item access by key is very fast, since hashes are directly compared. 
+
+	* Key ordering is preserved as a sife effect for more compact memory layout
+
+	* Dicts have significantly more memory over head. A hash table needs needs 
+	  more data per entry
+
+	* To save memory, avoid creating instance attributes outside of the
+	  __init__ method
+
+> Set Theory
+
+	Sets in python are a type that is immutable and are apart of the standard library, and are now built-ins. They are a collection of unique objects and are used to remove duplication. 
+
+	Set elements must be hashable. The set type is not hashable, so you can't build a set with a nested set. 
