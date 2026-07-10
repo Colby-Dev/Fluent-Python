@@ -1,0 +1,26 @@
+               Chapter 4
+-----------------------------------------
+
+   > Unicode Text Vs Bytes:
+   ------------------------
+
+	Python has a sharp distinction between strings of text and sequences of raw bytes. Chapter 4 goes over this in detail. 
+
+   > Character Issues:
+   -------------------
+
+   	Strings in python are sequences of characters. Characters are specific Unicode value that is written like U+00FFFF. For example, A is U+0041. This string of unicode values depends on the encoding like UTF-8 or UTF-16E. Using the encode() and decode() functions you can change strings to UTF-8 and vice versa. 
+
+   > Byte Essentials:
+   ------------------
+
+   	Python has two binary sequence types bytes and bytearray. Bytes is an immutable type and bytearray is mutable type. Each one's items are ints from 0 to 255 that represent the unicode int. If however a slice from the bytes or bytearray type is taken this will return a string. Because of this every str method is supported by these types, and using bytes instead of strings are possible to be used as arguments. 
+
+	Python bytes and bytestrings items are really sequences of ints and the literaly notation reflects that ASCII text is embedded in them. For example, the new line \n item in a byte or bytearray.
+
+	Bytes and bytearrays can be built using the contructors. Their constructors copy the bytes from the source object into the newly created binary sequence. In contrast, memoryview objects let you share memory between binary data structures (bytes and bytearrays). 
+
+   > Basic Encoders / Decoders:
+   ----------------------------
+
+   	
