@@ -23,4 +23,112 @@
    > Basic Encoders / Decoders:
    ----------------------------
 
-   	
+   	The Python distro has many endcoders and decoders for text to byte conversion like utf-8. These encoders and decoders have unique functions encode(), decode(), etc. taking the alias (utf-8 and such) as parameters for which encoding you would like. 
+
+  > Understanding Encode/Decode Problems:
+  ---------------------------------------
+
+  	Errors from Encoding and Decoding can looks like generic errors from the interpreter. Usually they show UnicodeEncodeError and UnicodeDecodeError respectfully. 
+
+  > Coping with UnicodeEncodeError:
+  ---------------------------------
+
+  	If a character is not defined in the encoding format, the error UnicodeEncodeError will be raised, unless a special handling is provided. This can be done by passing errors argument to the encoding method. Example: 
+
+		>>> city = 'Sao Paulo'
+		>>> city.encode('cp437')
+		(prints UnicodeEncodeError)
+		>>> city.encode('cp437', errors='ignore)
+		b'So Paulo'
+
+	A good check is the str.isascii() method to determine if the text is ascii and therefore encodable. 
+
+   > Coping with UnicodeDecodeError:
+   ---------------------------------
+
+   	Decoding errors will happen because not all characters are ascii resulting in a UnicodeDecodeError. This can be resolved in the same way by passing the errors keyword. Some decoding formats like cp1252, iso8859_1 will decode anything even garbage chars. 
+
+   > SyntaxError When Loading Modules with Unexpected Encoding:
+   ------------------------------------------------------------
+
+   	Python by default uses UTF-8. If you load .py module with a non-UTF-8 character and no encoding declaration, Python will throw a SyntaxError. UTF-8 is widely deployed in GNU/Linux and macOS. You can specify the encoding using a magic comment (header file) # coding: cp1252.
+
+   > How to Discover the Encoding of a Byte Sequence:
+   --------------------------------------------------
+
+   	You are unable to tell the encoding of a byte sequence unless you are told. But usually the most common is UTF-8 or ASCII. Tools do exist that guess the encoding by determining the encoded characters but some are impossible to tell. 
+
+   > BOM: A Useful Gremlin:
+   ------------------------
+
+   	The BOM is the byte order mark, these are extra bytes at the beginnging of an encoding sequence that tell the ordering of the CPU where the encoding was performed. This is useful since we expect some bytes before the actual value is encoded/decoded. 
+
+   > Handling Text Files:
+   ----------------------
+
+   	Always, decode / encode, at the, beginning / the end, of inputs if you need to do so. Using in the middle of operations is a bad way to handle this as it can alter the typing of the function outputs. Using the open() keyword will automatically decode when reading and encode when writing files. 
+
+	When handling non UTF-8 encoding we must account for the output that the decoding cannot read such as tilde's. We must handle these as programs must run on any machines and operating systems. 
+
+   > Beware of Encoding Defaults:
+   ------------------------------
+
+   	Do not rely on encoding defaults as the defaults will work on some systems but not others. You can handle this by using the local.getpreferredencoding() to allow the locale to set the encoding that is returned. 
+
+   > Noramlizing Unicode for Reliable Comparisons:
+   -----------------------------------------------
+
+   	String comparisons are difficult by the fact that Unicode has combining characters to define special letters such as an e with a tilde. If you would compare the two they would not be equal because of the extra character. 
+
+		s1 = 'cafe'
+		s2 = 'cafe\N{COMBINING ACUTE ACCENT}'
+
+		>>> len(s1) , len(s2)
+		>>> (4,5) # How is this possible?? 
+
+	To account for this we use unicodedata.normalize(). This function takes one of four arguments that can handle situations like the example from above. These arguments are shown here: 
+
+	NFC - Normalization Form C, composes the code points to produce the 
+	      shortest possible string. 
+
+	      normalize('NFC', s1) == normalize('NFC', s2)
+	      >>> True
+
+	NFD - Normalization Form D, decomposes the code points to produce the
+	      longest string possible. 
+
+	      normalize('NFD', s1) == normalize('NFD', s2)
+	      >>> True
+
+	NFKC - Normalization Form Kompatibility C, stronger form of NFC that 
+	       considers greek and latin alphabets in the same shortest method. 
+
+	NFKD - Normalization Form Kompatibility D, stronger form of NFD that
+	       considers greek and latin alphabets in the same largest method. 
+
+
+	Most keyboards have drivers that default their inputs to NFC, but its also good to know and use NFC just in case. Single characters also run into issues with this as well but are handled in the same way.
+
+   > Case Folding:
+   ---------------
+
+   	Case folding is converting all text to lower case with some exceptions. This is supported by the str.casefold() method. Usually it will produce the same as the str.lower() method, but when dealing with uniqure greek or latin characters they will produce different results. To handle this we can use Utility Functions for Normalized Text Matching. 
+
+   > Utility Functions for Normalized Text Matching:
+   -------------------------------------------------
+
+	NFC and NFD are safe to use and allow for comparisons between Unicode strings by normalizing the way certain characters and symbols are interpreted. Using custom functions that use normalize() and their methods, NFC or NFD, can allow for more dynamic behavior. 
+
+	An example of this would be using the normalize().casefold() to ignore casing in comparisons or just creating variables to compare unicode strings without repeating the same normalize function again. 
+
+   > Extreme "Normalization":Taking Out Diacrtics:
+   -----------------------------------------------
+
+	Google handles searching by removing diacritics, accents, cedillas, etc. This means google actually just converts any non UTF-8 characters to normalize them to avoid any confusions when searching for things that use them. This helps make URLs more readable. 
+
+   > Chapter Summary:
+   ------------------
+
+	In this chapter it briefly went over 1 character == 1 byte and how to handle Unicode. After a quick overview of binary sequence types, bytes, bytearraym and memoryview, the encoding and decoding sections were handled. This included using the normalize library and function with the methods NFC, NFD. 
+
+
