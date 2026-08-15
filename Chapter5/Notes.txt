@@ -1,0 +1,81 @@
+
+
+   Chapter 5: Data Class Builders
+   ==============================
+
+
+   Data classes are a collection of fields with little or no extra functionality such as a decorator or using libraries like collections.namedtuple or typing.NamingTuple.
+
+   Using Data classes helps reduce code and simply objects that are returned. For example if an object holds coordinates using comparison operators will only compare the hashable object to the other value which may look right but will not return a True unless its the same object. 
+
+   To get around this we use a Data Class. In Example 1, we show how to use a few data classes to address this issue with python. This allows for simple conversions and uses of data despite it being in an object field and reduces the amount of code. 
+
+   (see Example 1) 
+
+   > Main Features of These Data Builders
+   --------------------------------------
+
+	Mutable Instances - using typing.NamedTuple and 
+			    collections.namedtuple are tuple subclasses so 
+			    they are immutable. @dataclass produces mutable
+			    classes. @dataclass can use a frozen arg that 
+			    when True raises an exception if you try to 
+			    assign a value to a field after initialization.
+
+	Class Statement syntax - typing.NamedTuple and @dataclass support 
+				 regular class statement syntax. This 
+				 makes it easier to add methods and 
+				 docstrings. 
+
+	Construct dict - both named tuple variants provide an instance 
+			 method (._asdict) to make a dict object from 
+			 the fields in the instance of the tuples. 
+			 @dataclass has dataclasses.asdict. 
+
+	Field names & default values - all class builders let you get 
+				       field names and default values. 
+				       You can get this metadata from the 
+				       tuples by using ._fields and 
+				       ._fields_defaults class attributes. 
+				       From the dataclasses module you can 
+				       use the fields function which 
+				       returns a tuple of the fields.
+
+	Get Fields Types - You can use the .get_type_hints function to 
+			   find the class attributes instead of reading 
+			   from the __annotations__ of the data classes. 
+
+	New Instance with Changes - given a named tuple instance x, the 
+				    call x._replace(**kwargs) returns a
+				    new instance with the kwargs given. 
+				    dataclass does the same. 
+
+	New Class at Runtime - Using class syntax is readable but it is
+			       hardcoded. A framework may need to create
+			       new data classes at runtime though. named
+			       tuples allow you to do this by default and
+			       data classes uses a make_dataclass function
+			       to do this. 
+
+   > Classic Named Tuples
+   ----------------------
+
+   	The collections.namedtuple function is a factory that builds subclasses of tuples with different fields, and unique __repr__ . Classes built with namedtuple can be used where tuples are needed, so basically immutable objects. Some of the most useful things with namedtuples is the ability to transform them to dict, gather fields, and creating specific data types / other data structures like tuples inside of namedtuple. Named tuples offer a few attributes and methods in addition to those inherited from a tuple class. 
+
+	(see Example 2)
+
+	Namedtuple accepts a defaults keyword which provides default values to attributes. This allows the function signature to specify default values regardless of the variables passed. You can also do this with classes. 
+
+   > Typed Named Tuples
+   --------------------
+
+   	Any class with a default field can be written using typing.NamedTuple to define attributes that the class will have regardless. These classes do not have any methods other than the ones from the collections.namedtuple. The best part of these classes are type annotations (type hints) dicussed next. 
+
+   > Type Hints 101
+   ----------------
+	Type hints are ways to delcare the expected types of function args, return values, variables, and attributes. Type hints are documentation that can be checked by IDEs since they have no behavior at runtime. Thus, creating a program that uses a float type hint can still except other types since they have no actionable purpose at runtime. 
+
+
+   	
+
+			
