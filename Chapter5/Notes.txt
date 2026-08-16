@@ -73,9 +73,14 @@
 
    > Type Hints 101
    ----------------
-	Type hints are ways to delcare the expected types of function args, return values, variables, and attributes. Type hints are documentation that can be checked by IDEs since they have no behavior at runtime. Thus, creating a program that uses a float type hint can still except other types since they have no actionable purpose at runtime. 
+
+	Type hints are ways to delcare the expected types of function args, return values, variables, and attributes. Type hints are documentation that can be checked by IDEs since they have no behavior at runtime. Thus, creating a program that uses a float type hint can still except other types since they have no actionable purpose at runtime.
+
+   > Variable Annotations
+   ----------------------
+	
+	When using type hinting no effect happens at runtime, except if modules used call for it. Most modules that do use the __annotations__ method which the modules typing.NamedTuple and @dataclass use to allow for extra functionality. The __annotations__ method builds a dictionary of the attributes in the class and their type hinted values. They do not observe constant default values as shown in Example 3. 
+
+	(see Example 3)
 
 
-   	
-
-			
