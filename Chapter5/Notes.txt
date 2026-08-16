@@ -83,4 +83,13 @@
 
 	(see Example 3)
 
+	As you can see the behavior is similar but one important note is that the Dataclass is mutable while the NamedTuple is not. NamedTuple is a subclass of Tuple so it inherits the basic dunder methods, whereas @dataclass can has some parameters that can change the dunder methods. 
+
+   > Field Options
+   ---------------
+
+   	In Python, default fields are all or nothing. If you specify the params with defaults then you must supply all variables in the function signature for NamedTuples whereas Dataclass does not need this. Using defaults is very useful as we can type hint the default params to classes that way when we create a new instance of the class it will make new variables specific to that instance, instead of all instances sharing the same list. 
+
+	(see Example 4)
+
 
