@@ -92,4 +92,50 @@
 
 	(see Example 4)
 
+   > Post init Processing
+   ----------------------
 
+	The __init__ method that is created from @dataclass only takes arguments passed and then assigns them. @Dataclass can also use __post_init__ for validation and computer field values based on other fields. __post_init__ can hold code that will execute based on initialization of classs. This can be useful to check values or instantly compute some after initialization. 
+
+	(see Example 5) 
+
+   > Dataclass Dublin Core Resource
+   --------------------------------
+
+   	This example in the text shows how __repr__ can be used with classes. Basically formatting the data given to the class for its attributes can be done by defining the __repr__ function inside the class and initializing an f string with the format of how the fields are represented. 
+
+   > Pattern Matching Class:
+   -------------------------
+
+   	Class patterns are designed to match class instances by type and attributes. There are 3 types of class pattern matching: simple, keyword, and positional. This is a perfect use case of @dataclass or typing.NamedTuple because we can uniformly establish what the classes look like with tuples and use their class specific attributes. 
+
+   > Simple Method:
+   ----------------
+
+	Using simple method you can specify the type and which attributes to grab out of the pattern. For example: 
+
+		case [str(name), _, _, (float(lat), (float(lon))]
+
+	This would speciy name is a string, then have two garbage variables, finally have a float tuple of lat and lon. 
+
+   > Keyword Class Pattern
+   -----------------------
+
+   	Keyword class patterns match specific keywords in a class attributes to return specific results. This can be done by matching common fields that are uniform for the instance of the class then appending them to a result like a list. As long as the attribute we are matching for qualifies it will return the result regardless of the other fields. 
+
+	(see Example 6)
+
+   > Positional Class Pattern
+   --------------------------
+
+   	In the past Example 6 we wanted to return the city name and continent for the match that we made. In doing so we had to use an f string and dig into the variable which can be verbose in the code base. A simpler way of doing this is using the garbage variable _ to take the arguments we dont want. 
+
+	This is helpful because now we can just use the case and just have a place for the continent variable and any other variable we are trying to show from the match case. Here is an example: 
+
+		match city:
+			case City('BRLN', _ , continent) 
+			results.append(city.continent) 
+
+   	You can always find the positonal arguments by using the __match_args__ variable to show the order of the args. 
+
+   
