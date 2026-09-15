@@ -114,7 +114,7 @@
 
 	Using simple method you can specify the type and which attributes to grab out of the pattern. For example: 
 
-		case [str(name), _, _, (float(lat), (float(lon))]
+		case [str(name), _, _, (float(lat), (float(lon)))]
 
 	This would speciy name is a string, then have two garbage variables, finally have a float tuple of lat and lon. 
 
