@@ -1,0 +1,27 @@
+
+
+
+   Chapter 6: Object References, Mutability, and Recycling
+   =======================================================
+
+   > Variables Are Not Boxes
+   -------------------------
+
+   	Variables are more like sticky notes than boxes that hold data. Variables are essentially references or labels to objects that are created first on the right hand side. We know this by looking at how assignment works since the label cannot reference nothing therefore an object must be created first. Because of this objects can have multiple labels that reference them at that state. 
+
+   > Identity, Equality, and Aliases
+   ---------------------------------
+
+	Variables can be bound to distinct objects. The objects that they are bound to have unique ids, found with the id() function. This ID allows us to find the object in memory and understand the piece of data we are accessing. This id() check is rarely used as most use the is function that compares these id's
+
+   > Choosing Between == and is
+   ----------------------------
+
+   	The == operator compares the values of objects (the data they hold), while is compares identites (their ids). Usually we are comparing values not identities in python so we use == more. But when comparing states or bools that are well defined process we use is, like x is/is not None. 
+
+	The is operator is faster than == because it cannot be overloaded, therefore python doesnt have to find and invoke special methods to evaluate it. Is operator is also just simple as its just comparing IDs
+
+   > The Relative Immutability of Tuples
+   -------------------------------------
+
+   	Tuples, lists, dicts, etc. are containers that hold references to objects. An interesting note about this though is that the tuple itself could be immutable but the data referenced inside may not be and is able to change which can produce unexpected results. 

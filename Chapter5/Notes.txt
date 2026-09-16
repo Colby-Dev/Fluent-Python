@@ -76,66 +76,8 @@
 
 	Type hints are ways to delcare the expected types of function args, return values, variables, and attributes. Type hints are documentation that can be checked by IDEs since they have no behavior at runtime. Thus, creating a program that uses a float type hint can still except other types since they have no actionable purpose at runtime.
 
-   > Variable Annotations
-   ----------------------
-	
-	When using type hinting no effect happens at runtime, except if modules used call for it. Most modules that do use the __annotations__ method which the modules typing.NamedTuple and @dataclass use to allow for extra functionality. The __annotations__ method builds a dictionary of the attributes in the class and their type hinted values. They do not observe constant default values as shown in Example 3. 
+   > The Meaning of Variable Annotations
+   -------------------------------------
 
-	(see Example 3)
+   	Variable annotations in Python have no effect at runtime but do matter for modules that are used. In a normal Python class we can declare variables that are hinted, assigned, and both. 
 
-	As you can see the behavior is similar but one important note is that the Dataclass is mutable while the NamedTuple is not. NamedTuple is a subclass of Tuple so it inherits the basic dunder methods, whereas @dataclass can has some parameters that can change the dunder methods. 
-
-   > Field Options
-   ---------------
-
-   	In Python, default fields are all or nothing. If you specify the params with defaults then you must supply all variables in the function signature for NamedTuples whereas Dataclass does not need this. Using defaults is very useful as we can type hint the default params to classes that way when we create a new instance of the class it will make new variables specific to that instance, instead of all instances sharing the same list. 
-
-	(see Example 4)
-
-   > Post init Processing
-   ----------------------
-
-	The __init__ method that is created from @dataclass only takes arguments passed and then assigns them. @Dataclass can also use __post_init__ for validation and computer field values based on other fields. __post_init__ can hold code that will execute based on initialization of classs. This can be useful to check values or instantly compute some after initialization. 
-
-	(see Example 5) 
-
-   > Dataclass Dublin Core Resource
-   --------------------------------
-
-   	This example in the text shows how __repr__ can be used with classes. Basically formatting the data given to the class for its attributes can be done by defining the __repr__ function inside the class and initializing an f string with the format of how the fields are represented. 
-
-   > Pattern Matching Class:
-   -------------------------
-
-   	Class patterns are designed to match class instances by type and attributes. There are 3 types of class pattern matching: simple, keyword, and positional. This is a perfect use case of @dataclass or typing.NamedTuple because we can uniformly establish what the classes look like with tuples and use their class specific attributes. 
-
-   > Simple Method:
-   ----------------
-
-	Using simple method you can specify the type and which attributes to grab out of the pattern. For example: 
-
-		case [str(name), _, _, (float(lat), (float(lon))]
-
-	This would speciy name is a string, then have two garbage variables, finally have a float tuple of lat and lon. 
-
-   > Keyword Class Pattern
-   -----------------------
-
-   	Keyword class patterns match specific keywords in a class attributes to return specific results. This can be done by matching common fields that are uniform for the instance of the class then appending them to a result like a list. As long as the attribute we are matching for qualifies it will return the result regardless of the other fields. 
-
-	(see Example 6)
-
-   > Positional Class Pattern
-   --------------------------
-
-   	In the past Example 6 we wanted to return the city name and continent for the match that we made. In doing so we had to use an f string and dig into the variable which can be verbose in the code base. A simpler way of doing this is using the garbage variable _ to take the arguments we dont want. 
-
-	This is helpful because now we can just use the case and just have a place for the continent variable and any other variable we are trying to show from the match case. Here is an example: 
-
-		match city:
-			case City('BRLN', _ , continent) 
-			results.append(city.continent) 
-
-   	You can always find the positonal arguments by using the __match_args__ variable to show the order of the args. 
-
-   
