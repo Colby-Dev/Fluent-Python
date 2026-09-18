@@ -1,0 +1,41 @@
+
+
+
+   Chapter 7: Functions as First-Class Objects
+   ===========================================
+
+   Treating a Function like an Object
+   ----------------------------------
+
+        Python is designed to treat functions as objects. In Example 1, we can see that the function is created but treated like an object when the doc string is accessed. First class objects are essentially variables that hold functions. 
+        This is functional programming as we are using iterations of functions for multiple cases, by assiging them in variables and then using them to perform specific task in our program.
+
+        (see Example 1)
+
+    High Order Functions
+    --------------------
+
+        A function that takes a function as an argument or returns a function as the result is a higher order function. An example of this is the map function as it takes in functions and returns a data structure of the mapping to the
+        other value. Higher order functions are useful in manipulating data and other objects to accomplish a goal of a program. Such as reversing and sorting a list of strings using a sorted() function that takes in another function, like
+        reversed to order them in a specific way. 
+
+        modern replacements have changed how higher order functions work as using *args and **kwargs in functions can allow us to call whatever we need in a higher order function. 
+
+    Modern Replacements For Map,Filter,and Reduce
+    ---------------------------------------------
+
+        Since the implementation of args and kwargs, so that we avoid using built-in deprecated functions as these limit our capability for using the language and making any function a high order function. A listcomp or gencomp does the job of map
+        and filter combined so that we do not have to use these when we are needing them as shown in Example 2. 
+
+        (Example 2)
+    
+    Anonymous Functions
+    -------------------
+
+        The lambda keyword creates an anonymous function within a Python expression. 
+
+        However Python syntax can limit the body of lambda functions to be pure expressions so that the body cannot contain other Python statements such as while, try, etc. This also applies to the = operator because it is also a statement and therefore
+        cannot occur in a lambda. 
+        
+
+    
