@@ -24,4 +24,8 @@
    > The Relative Immutability of Tuples
    -------------------------------------
 
-   	Tuples, lists, dicts, etc. are containers that hold references to objects. An interesting note about this though is that the tuple itself could be immutable but the data referenced inside may not be and is able to change which can produce unexpected results. 
+   	Tuples, lists, dicts, etc. are containers that hold references to objects. An interesting note about this though is that the tuple itself could be immutable but the data referenced inside may not be and is able to change which can produce unexpected results. Example 1 shows how this is possible: 
+
+	(Example 1) 
+
+
