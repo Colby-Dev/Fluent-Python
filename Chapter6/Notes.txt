@@ -57,4 +57,22 @@
    > Defensive Programming with Mutable Parameters
    -----------------------------------------------
 
-   	When you are coding a function that receives a mutable parameter, you should carefully consider whether the caller expects the argument passed to be changed. This is because mutable types that are passed through an object can be changed, like if you have a basketball team list that is passed through an object changing the object will change the list that was passed through it. This can lead to a loss of data and violates the Principal of least astonishment. 
+   	When you are coding a function that receives a mutable parameter, you should carefully consider whether the caller expects the argument passed to be changed. This is because mutable types that are passed through an object can be changed, like if you have a basketball team list that is passed through an object changing the object will change the list that was passed through it. This can lead to a loss of data and violates the Principal of least astonishment.
+
+	To avoid this handling the copy should be the first step in the __init__ function. By using an if function to detect if the parameter is None, we can assign it to an empty copy or just pass it to a new deep copy. This allows us to alter the copy without changing the parameter we passed through it. 
+
+   > del and Garbage Collection
+   ----------------------------
+
+   	del is not a function, del is a statement. The difference being we write del x and not del(x). del(x) does work but not because it is a function but because Python treats expression similar to functions. del itself is complicated because it deletes references and not objects, therefore a reference (variable) A = (1, 2) can be deleted but the actual object of (1,2) is unaffected IF it is assigned somehwere else for example: 
+
+	A = (1,2)
+	B = A
+	del A
+	print(B) --> (1,2) 
+
+	In CPython, the primary way for garbage collection is reference counting. Essentially, each  object keeps count of how many refences point to it. If that count reaches 0 then the object is destroyed and memory is freed. 
+
+	Objects can be assigned to references that point to other references. If the original reference is deleted then the others are also deleted. We can do this using weakref library. The point of this is to illistrate that del specifically deletes references. 
+
+
