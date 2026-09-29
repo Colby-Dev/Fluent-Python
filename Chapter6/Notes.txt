@@ -1,6 +1,4 @@
 
-
-
    Chapter 6: Object References, Mutability, and Recycling
    =======================================================
 
@@ -28,4 +26,35 @@
 
 	(Example 1) 
 
+   > Copies Are Shallow by Default
+   -------------------------------
 
+	The best way to copy a list is to use the list function itself for the new assignment to a variable. This is because other methods like the assignment operator can create a shallow copy. The copy is filled with references to the orignial object and uses more memory. 
+
+	This can also be trouble if the shallow copy has mutable instances in it. This creates an issue where the instance can change the copy from the original depending on the order the veriable is changing. 
+
+   > Deep and Shallow Copies of Arb Objects
+   ----------------------------------------
+
+   	Deep copies are duplicates that do not share references and are generally much easier to work with without any surprises. We can use the copy library to create these copies. Deep copies can be too deep sometimes though as objects may reference external resources or singletons that should not be copied.  
+
+	(see Example 2)
+
+   > Function Parameters as Ref
+   ----------------------------
+
+	The only mode of parameter passing in Python is call by sharing. This is calling each parameter of the function gets a copy of each referenc in the arguments. The parameters inside the function become aliases of the actual arguments. Because of this a function may change any mutable object passed as a parameter, but it cannot change the identity of those objects. Example 3 shows how this is done. 
+
+	(see Example 3) 
+
+   > Mutable Types as Parameter Defaults: Bad Idea
+   -----------------------------------------------
+
+   	Avoid mutabled objects as defaults of parameters as this can lead to confusion and unexpected behaviors when passing arguments through functions. When we have mutable types like list as defaults they can change the actual object we pass through it resulting in data changing we may have not been expecting. 
+
+	(see Example 4) 
+
+   > Defensive Programming with Mutable Parameters
+   -----------------------------------------------
+
+   	When you are coding a function that receives a mutable parameter, you should carefully consider whether the caller expects the argument passed to be changed. This is because mutable types that are passed through an object can be changed, like if you have a basketball team list that is passed through an object changing the object will change the list that was passed through it. This can lead to a loss of data and violates the Principal of least astonishment. 
