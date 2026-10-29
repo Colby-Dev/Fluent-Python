@@ -34,8 +34,48 @@
 
         The lambda keyword creates an anonymous function within a Python expression. 
 
-        However Python syntax can limit the body of lambda functions to be pure expressions so that the body cannot contain other Python statements such as while, try, etc. This also applies to the = operator because it is also a statement and therefore
-        cannot occur in a lambda. 
+        However Python syntax can limit the body of lambda functions to be pure expressions so that the body cannot contain other Python statements such as while, try, etc. This also applies to the = operator because it is also a statement and therefore cannot occur in a lambda. 
         
 
-    
+    The Nine Flavors of Callable Objects
+    ------------------------------------
+
+    The call operator () can be applied to other objects outside of functions. Python has a helpful built in function called callable() to determine if a function can be called or not. The 9 callable objects are: 
+
+    * User-defined functions
+    * Built-in functions
+    * Built-in methods
+    * Methods
+    * Classes
+    * Class instances
+    * Generator functions
+    * Native Coroutine functions
+    * Asynchronous generator functions
+
+   User-Defined Callable Types
+   ---------------------------
+
+   All Python functions are objects (like everything else in python) so they can implment class functions using the __call__ instance method. Example 3 shows how this can be done:
+   
+   (see Example 3) 
+
+   The __call__ dunder method allows certain behavior to be triggered when the function is called. Remember this can be applied to objects which everything is one in Python. 
+
+   From Positional to Keyword-Only Parameters
+   ------------------------------------------
+
+   One of the best features of Python functions is the flexible parameter handling mechanisms. Python allows us to use the *args and **kwargs in parameters. The differences between *args and **kwargs is *args specifys the parameters as tuples and **kwargs can use keywords in a dict format where the parameter passed is the key and its value specified is the dict value. 
+
+   (see Example 4)
+
+   Positional Only Parameters
+   --------------------------
+
+   User-defined function signatures may specify positional-only parameters, use / in the parameter list to define this function shown below: 
+
+   	def divmod(x, y, /): 
+		return (a // b, a % b)
+
+   All arguments to the left of the / in the signature are positional only. Anything past the / work normally. 
+
+   (skipped CH7 functional argument modules)
